@@ -122,6 +122,7 @@ from datetime import datetime
 philpapers = pd.read_csv("philpapers2123N.csv")
 
 print(len(philpapers['Abstract'][philpapers['Abstract'].isna()]))
+print(philpapers['Abstract'][philpapers['Abstract'].isna()])
 
 i = 0
 for i in range(len(philpapers['Abstract'])):
@@ -137,7 +138,7 @@ for i in range(len(philpapers['Abstract'])):
         driver = webdriver.Chrome()
         driver.get(url)
         # driver.maximize_window()
-        time.sleep(0.01)
+        time.sleep(3)
         page = driver.page_source
         soup = BeautifulSoup(page, 'html.parser')
 
@@ -183,7 +184,6 @@ for i in range(len(philpapers['Abstract'])):
         # if articleSection:
         #     philpapers.loc[i, 'Abstract'] = ""
         #     for element in articleSection.select("p"):
-                
         #         philpapers.loc[i, 'Abstract'] += element.get_text()
         #         philpapers.to_csv('philpapers2123N.csv', index=False)
 
