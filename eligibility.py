@@ -1,3 +1,4 @@
+from multiprocessing.util import abstract_sockets_supported
 import pandas as pd
 import numpy as np
 from bs4 import BeautifulSoup
@@ -5,47 +6,58 @@ from selenium import webdriver
 import time
 from datetime import datetime
 
-# ## ACM case
-# acm = pd.read_csv("acm.12.20-10.23.no.dups.with.all.csv")
+## ACM case
+acm = pd.read_csv("acm.12.20-10.23.no.dups.with.all.csv")
 
-# print(len(acm['Abstract'][acm['Abstract'].isna()]))
+print(len(acm['Abstract'][acm['Abstract'].isna()]))
 
-# i = 0
-# for i in range(len(acm['Abstract'])):
+i = 0
+for i in range(len(acm['Abstract'])):
     
-#     if isinstance(acm['Abstract'].loc[i], float):
+    if isinstance(acm['Abstract'].loc[i], float):
 
-#         obj = datetime.now()
+        obj = datetime.now()
 
-#         url = acm['URL'].loc[i]
-#         print('\x1b[6;30;42m' + url + '\x1b[0m')
+        url = acm['URL'].loc[i]
+        print('\x1b[6;30;42m' + url + '\x1b[0m')
 
-#         driver = webdriver.Chrome()
-#         driver.get(url)
-#         # driver.maximize_window()
-#         time.sleep(0.1)
-#         page = driver.page_source
-#         driver.quit()
-#         soup = BeautifulSoup(page, 'html.parser')
+        driver = webdriver.Chrome()
+        driver.get(url)
+        # driver.maximize_window()
+        time.sleep(0.1)
+        page = driver.page_source
+        driver.quit()
+        soup = BeautifulSoup(page, 'html.parser')
 
-#         main_content = soup.find('div', class_='main-content')
+        main_content = soup.find('div', class_='main-content')
 
-#         if main_content:
+        if main_content:
 
-#             for element in main_content.select("p"):
-#                 acm.loc[i, 'Abstract'] = element.get_text()
+            for element in main_content.select("p"):
+                acm.loc[i, 'Abstract'] = element.get_text()
+                acm.to_csv("acm.12.20-10.23.no.dups.with.all.csv")
         
-#         abstracts_div = soup.find('div', id='abstracts')
+        abstracts_div = soup.find('div', id='abstracts')
 
-#         if abstracts_div:
+        if abstracts_div:
 
-#             for element in abstracts_div.select("p"):
-#                 acm.loc[i, 'Abstract'] = element.get_text()
+            for element in abstracts_div.select("p"):
+                acm.loc[i, 'Abstract'] = element.get_text()
+                acm.to_csv("acm.12.20-10.23.no.dups.with.all.csv")
+
+        abstractSection = soup.find('div', class_='abstractSection')
+
+        if abstractSection:
+
+            for element in abstractSection.select("p"):
+                acm.loc[i, 'Abstract'] = element.get_text()
+                acm.to_csv("acm.12.20-10.23.no.dups.with.all.csv")
         
-# print(len(acm['Abstract'][acm['Abstract'].isna()]))
+print(len(acm['Abstract'][acm['Abstract'].isna()]))
+print(acm)
 
-# # Save the updated DataFrame back to the CSV file
-# acm.to_csv('acm.12.20-10.23.no.dups.with.all.csv', index=False)
+# Save the updated DataFrame back to the CSV file
+acm.to_csv('acm.12.20-10.23.no.dups.with.all.csv', index=False)
 
 
 ## Springer case
@@ -119,28 +131,28 @@ from datetime import datetime
 # springer.to_csv('springer2123.csv', index=False)
 
 # Philpapers case
-philpapers = pd.read_csv("philpapers2123N.csv")
+# philpapers = pd.read_csv("philpapers2123N.csv")
 
-print(len(philpapers['Abstract'][philpapers['Abstract'].isna()]))
-print(philpapers['Abstract'][philpapers['Abstract'].isna()])
+# print(len(philpapers['Abstract'][philpapers['Abstract'].isna()]))
+# print(philpapers['Abstract'][philpapers['Abstract'].isna()])
 
-i = 0
-for i in range(len(philpapers['Abstract'])):
+# i = 0
+# for i in range(len(philpapers['Abstract'])):
     
-    if isinstance(philpapers['Abstract'].loc[i], float):
+#     if isinstance(philpapers['Abstract'].loc[i], float):
 
-        print(philpapers.loc[i, 'URL'])
-        obj = datetime.now()
+#         print(philpapers.loc[i, 'URL'])
+#         obj = datetime.now()
 
-        url = philpapers['URL'].loc[i]
-        print(i, ") ", '\x1b[6;30;42m' + url + '\x1b[0m')
+#         url = philpapers['URL'].loc[i]
+#         print(i, ") ", '\x1b[6;30;42m' + url + '\x1b[0m')
 
-        driver = webdriver.Chrome()
-        driver.get(url)
-        # driver.maximize_window()
-        time.sleep(3)
-        page = driver.page_source
-        soup = BeautifulSoup(page, 'html.parser')
+#         driver = webdriver.Chrome()
+#         driver.get(url)
+#         # driver.maximize_window()
+#         time.sleep(3)
+#         page = driver.page_source
+#         soup = BeautifulSoup(page, 'html.parser')
 
         # main_content = soup.find('div', class_='main-content')
 
@@ -196,59 +208,59 @@ for i in range(len(philpapers['Abstract'])):
         #         philpapers.loc[i, 'Abstract'] += element.get_text()
         #         philpapers.to_csv('philpapers2123N.csv', index=False)
 
-        article = soup.find('div', class_='article fulltext-view')
+        # article = soup.find('div', class_='article fulltext-view')
 
-        if article:
-            philpapers.loc[i, 'Abstract'] = ""
-            for element in article.select("p"):
-                print(element.get_text())
-                philpapers.loc[i, 'Abstract'] += element.get_text()
-                philpapers.to_csv('philpapers2123N.csv', index=False)
+        # if article:
+        #     philpapers.loc[i, 'Abstract'] = ""
+        #     for element in article.select("p"):
+        #         print(element.get_text())
+        #         philpapers.loc[i, 'Abstract'] += element.get_text()
+        #         philpapers.to_csv('philpapers2123N.csv', index=False)
 
-        article = soup.find('div', class_='article extract-view')
+        # article = soup.find('div', class_='article extract-view')
 
-        if article:
-            philpapers.loc[i, 'Abstract'] = ""
-            for element in article.select("p"):
-                print(element.get_text())
-                philpapers.loc[i, 'Abstract'] += element.get_text()
-                philpapers.to_csv('philpapers2123N.csv', index=False)
+        # if article:
+        #     philpapers.loc[i, 'Abstract'] = ""
+        #     for element in article.select("p"):
+        #         print(element.get_text())
+        #         philpapers.loc[i, 'Abstract'] += element.get_text()
+        #         philpapers.to_csv('philpapers2123N.csv', index=False)
 
-        article = soup.find('div', id='sec001')
+        # article = soup.find('div', id='sec001')
 
-        if article:
-            philpapers.loc[i, 'Abstract'] = ""
-            for element in article.select("p"):
-                print(element.get_text())
-                philpapers.loc[i, 'Abstract'] += element.get_text()
-                philpapers.to_csv('philpapers2123N.csv', index=False)
+        # if article:
+        #     philpapers.loc[i, 'Abstract'] = ""
+        #     for element in article.select("p"):
+        #         print(element.get_text())
+        #         philpapers.loc[i, 'Abstract'] += element.get_text()
+        #         philpapers.to_csv('philpapers2123N.csv', index=False)
 
-        article = soup.find('div', id='core-container')
+        # article = soup.find('div', id='core-container')
 
-        if article:
-            philpapers.loc[i, 'Abstract'] = ""
-            for element in article.select("p"):
-                print(element.get_text())
-                philpapers.loc[i, 'Abstract'] += element.get_text()
-                philpapers.to_csv('philpapers2123N.csv', index=False)
+        # if article:
+        #     philpapers.loc[i, 'Abstract'] = ""
+        #     for element in article.select("p"):
+        #         print(element.get_text())
+        #         philpapers.loc[i, 'Abstract'] += element.get_text()
+        #         philpapers.to_csv('philpapers2123N.csv', index=False)
 
-        article = soup.find('div', id='sec no-title')
+        # article = soup.find('div', id='sec no-title')
 
-        if article:
-            philpapers.loc[i, 'Abstract'] = ""
-            for element in article.select("p"):
-                print(element.get_text())
-                philpapers.loc[i, 'Abstract'] += element.get_text()
-                philpapers.to_csv('philpapers2123N.csv', index=False)
+        # if article:
+        #     philpapers.loc[i, 'Abstract'] = ""
+        #     for element in article.select("p"):
+        #         print(element.get_text())
+        #         philpapers.loc[i, 'Abstract'] += element.get_text()
+        #         philpapers.to_csv('philpapers2123N.csv', index=False)
         
-        article = soup.find('div', id='article_abstract')
+        # article = soup.find('div', id='article_abstract')
 
-        if article:
-            philpapers.loc[i, 'Abstract'] = ""
-            for element in article.select("p"):
-                print(element.get_text())
-                philpapers.loc[i, 'Abstract'] += element.get_text()
-                philpapers.to_csv('philpapers2123N.csv', index=False)
+        # if article:
+        #     philpapers.loc[i, 'Abstract'] = ""
+        #     for element in article.select("p"):
+        #         print(element.get_text())
+        #         philpapers.loc[i, 'Abstract'] += element.get_text()
+        #         philpapers.to_csv('philpapers2123N.csv', index=False)
 
 
         
@@ -256,6 +268,6 @@ for i in range(len(philpapers['Abstract'])):
     #     print("book")
         
 
-driver.quit()
-print(len(philpapers['Abstract'][philpapers['Abstract'].isna()]))
+# driver.quit()
+# print(len(philpapers['Abstract'][philpapers['Abstract'].isna()]))
 
