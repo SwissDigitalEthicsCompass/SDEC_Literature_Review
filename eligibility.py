@@ -1,4 +1,3 @@
-from multiprocessing.util import abstract_sockets_supported
 import pandas as pd
 import numpy as np
 from bs4 import BeautifulSoup
@@ -6,64 +5,64 @@ from selenium import webdriver
 import time
 from datetime import datetime
 
-## ACM case
-acm = pd.read_csv("acm.12.20-10.23.no.dups.with.all.csv")
+# # ACM case
+# acm = pd.read_csv("acm.12.20-10.23.no.dups.with.all.csv")
 
-print(len(acm['Abstract'][acm['Abstract'].isna()]))
+# print(len(acm['Abstract'][acm['Abstract'].isna()]))
 
-i = 0
-for i in range(len(acm['Abstract'])):
+# i = 0
+# for i in range(len(acm['Abstract'])):
     
-    if isinstance(acm['Abstract'].loc[i], float):
+#     if isinstance(acm['Abstract'].loc[i], float):
 
-        obj = datetime.now()
+#         obj = datetime.now()
 
-        url = acm['URL'].loc[i]
-        print('\x1b[6;30;42m' + url + '\x1b[0m')
+#         url = acm['URL'].loc[i]
+#         print('\x1b[6;30;42m' + url + '\x1b[0m')
 
-        driver = webdriver.Chrome()
-        driver.get(url)
-        # driver.maximize_window()
-        time.sleep(0.1)
-        page = driver.page_source
-        driver.quit()
-        soup = BeautifulSoup(page, 'html.parser')
+#         driver = webdriver.Chrome()
+#         driver.get(url)
+#         # driver.maximize_window()
+#         time.sleep(0.1)
+#         page = driver.page_source
+#         driver.quit()
+#         soup = BeautifulSoup(page, 'html.parser')
 
-        main_content = soup.find('div', class_='main-content')
+#         main_content = soup.find('div', class_='main-content')
 
-        if main_content:
+#         if main_content:
 
-            for element in main_content.select("p"):
-                acm.loc[i, 'Abstract'] = element.get_text()
-                acm.to_csv("acm.12.20-10.23.no.dups.with.all.csv")
+#             for element in main_content.select("p"):
+#                 acm.loc[i, 'Abstract'] = element.get_text()
+#                 acm.to_csv("acm.12.20-10.23.no.dups.with.all.csv")
         
-        abstracts_div = soup.find('div', id='abstracts')
+#         abstracts_div = soup.find('div', id='abstracts')
 
-        if abstracts_div:
+#         if abstracts_div:
 
-            for element in abstracts_div.select("p"):
-                acm.loc[i, 'Abstract'] = element.get_text()
-                acm.to_csv("acm.12.20-10.23.no.dups.with.all.csv")
+#             for element in abstracts_div.select("p"):
+#                 acm.loc[i, 'Abstract'] = element.get_text()
+#                 acm.to_csv("acm.12.20-10.23.no.dups.with.all.csv")
 
-        abstractSection = soup.find('div', class_='abstractSection')
+#         abstractSection = soup.find('div', class_='abstractSection')
 
-        if abstractSection:
+#         if abstractSection:
 
-            for element in abstractSection.select("p"):
-                acm.loc[i, 'Abstract'] = element.get_text()
-                acm.to_csv("acm.12.20-10.23.no.dups.with.all.csv")
+#             for element in abstractSection.select("p"):
+#                 acm.loc[i, 'Abstract'] = element.get_text()
+#                 acm.to_csv("acm.12.20-10.23.no.dups.with.all.csv")
         
-print(len(acm['Abstract'][acm['Abstract'].isna()]))
-print(acm)
+# print(len(acm['Abstract'][acm['Abstract'].isna()]))
+# print(acm)
 
-# Save the updated DataFrame back to the CSV file
-acm.to_csv('acm.12.20-10.23.no.dups.with.all.csv', index=False)
+# # Save the updated DataFrame back to the CSV file
+# acm.to_csv('acm.12.20-10.23.no.dups.with.all.csv', index=False)
 
 
 ## Springer case
-# springer = pd.read_csv("springer2123N.csv")
+springer = pd.read_csv("springer2123N.csv")
 
-# print(len(springer['Abstract'][springer['Abstract'].isna()]))
+print(len(springer['Abstract'][springer['Abstract'].isna()]))
 
 # i = 0
 # for i in range(len(springer['Abstract'])):
@@ -127,8 +126,78 @@ acm.to_csv('acm.12.20-10.23.no.dups.with.all.csv', index=False)
 # driver.quit()
 # print(len(springer['Abstract'][springer['Abstract'].isna()]))
 
-# Save the updated DataFrame back to the CSV file
+# # Save the updated DataFrame back to the CSV file
 # springer.to_csv('springer2123.csv', index=False)
+
+
+# adjustment for springer errors.Handling possible errors
+i = 0
+for i in range(len(springer['Abstract'])):
+    
+    if springer['Type'].loc[i] == 'Book':
+
+        obj = datetime.now()
+
+        url = springer['URL'].loc[i]
+        print(i, ") ", '\x1b[6;30;42m' + url + '\x1b[0m')
+
+        driver = webdriver.Chrome()
+        driver.get(url)
+        # driver.maximize_window()
+        time.sleep(0.01)
+        page = driver.page_source
+        soup = BeautifulSoup(page, 'html.parser')
+
+        # Find the section with data-title="About this book"
+        about_book_section = soup.find('section', {'data-title': 'About this book'})
+
+        if about_book_section:
+            # Find the internal div with class="c-book-section"
+            book_section = about_book_section.find('div', class_='c-book-section')
+
+            if book_section:
+                print(book_section.get_text())
+                # Update the Abstract column
+                springer.loc[i, 'Abstract'] = book_section.get_text()
+                springer.to_csv('springer2123N.csv', index=False)
+
+    if springer['Type'].loc[i] == 'ReferenceWork':
+
+        obj = datetime.now()
+
+        url = springer['URL'].loc[i]
+        print(i, ") ", '\x1b[6;30;42m' + url + '\x1b[0m')
+
+        driver = webdriver.Chrome()
+        driver.get(url)
+        # driver.maximize_window()
+        time.sleep(0.01)
+        page = driver.page_source
+        soup = BeautifulSoup(page, 'html.parser')
+
+        # Find the section with data-title="About this book"
+        about_book_section = soup.find('section', {'data-title': 'About this book'})
+
+        if about_book_section:
+            # Find the internal div with class="c-book-section"
+            book_section = about_book_section.find('div', class_='c-book-section')
+
+            if book_section:
+                print(book_section.get_text())
+                # Update the Abstract column
+                springer.loc[i, 'Abstract'] = book_section.get_text()
+                springer.to_csv('springer2123N.csv', index=False)
+        
+
+driver.quit()
+print(len(springer['Abstract'][springer['Abstract'].isna()]))
+
+# Save the updated DataFrame back to the CSV file
+springer.to_csv('springer2123N.csv', index=False)
+
+
+
+
 
 # Philpapers case
 # philpapers = pd.read_csv("philpapers2123N.csv")
