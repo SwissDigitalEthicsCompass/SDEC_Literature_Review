@@ -229,3 +229,4 @@ for i in range(len(springer['Abstract'])):
 springer_eligibility = springer_eligibility.sort_values(by='Eligibility_Score', ascending=False)
 springer_eligibility = springer_eligibility.reset_index(drop=True)
 springer_eligibility.to_csv("eligibilityStep/springer_eligibility2123.csv")
+
