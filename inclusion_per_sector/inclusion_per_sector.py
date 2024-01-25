@@ -1,5 +1,3 @@
-from gc import get_count
-from weakref import ref
 import pandas as pd
 import re
 
