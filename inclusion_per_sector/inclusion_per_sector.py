@@ -29,9 +29,9 @@ def get_score(cleaned_string, keywords):
     score = count/total_count
     return score
 
-def get_count_library(library, keywords, name):
+def get_count_library(library, keywords):
     count = 0
-    new_lib = pd.DataFrame()
+    new_lib = pd.read_csv("manual_work/review.csv")
     for i in library.index:
         
         score = 0
@@ -47,11 +47,11 @@ def get_count_library(library, keywords, name):
 
         if score > 0:
             count += 1
-        else: 
             for col in library.columns:
+                j = len(new_lib.index) + 1
                 new_lib.loc[i, col] = library[col].loc[i]
 
-    new_lib.to_csv(f"manual_work/{name}_to_review.csv")
+    new_lib.to_csv(f"manual_work/review.csv")
     return count
 
 # keywords
@@ -97,31 +97,42 @@ reflections_analysis_dict = {
 
 # ACM 
     
-print(f"\nACM - service count: {get_count_library(acm, service_dict, name='acm')}")
-print(f"ACM - technology/field count: {get_count_library(acm, technology_field_dict, 'acm')}")
-print(f"ACM - sector count: {get_count_library(acm, sector_dict, 'acm')}")
-print(f"ACM - reflections/analysis count: {get_count_library(acm, reflections_analysis_dict, 'acm')}")
+print(f"\nACM - service count: {get_count_library(acm, service_dict)}")
+print(f"ACM - technology/field count: {get_count_library(acm, technology_field_dict)}")
+print(f"ACM - sector count: {get_count_library(acm, sector_dict)}")
+print(f"ACM - reflections/analysis count: {get_count_library(acm, reflections_analysis_dict)}")
 
 
 # IEEE
 
-print(f"\nIEEE- service count: {get_count_library(ieee, service_dict, 'ieee')}")
-print(f"IEEE- technology/field count: {get_count_library(ieee, technology_field_dict, 'ieee')}")
-print(f"IEEE- sector count: {get_count_library(ieee, sector_dict, 'ieee')}")
-print(f"IEEE- reflections/analysis count: {get_count_library(ieee, reflections_analysis_dict, 'ieee')}")
+print(f"\nIEEE- service count: {get_count_library(ieee, service_dict)}")
+print(f"IEEE- technology/field count: {get_count_library(ieee, technology_field_dict)}")
+print(f"IEEE- sector count: {get_count_library(ieee, sector_dict)}")
+print(f"IEEE- reflections/analysis count: {get_count_library(ieee, reflections_analysis_dict)}")
 
 
 # Philpapers
 
-print(f"\nPhilpapers - service count: {get_count_library(philpapers, service_dict, 'philpapers')}")
-print(f"Philpapers - technology/field count: {get_count_library(philpapers, technology_field_dict, 'philpapers')}")
-print(f"Philpapers - sector count: {get_count_library(philpapers, sector_dict, 'philpapers')}")
-print(f"Philpapers - reflections/analysis count: {get_count_library(philpapers, reflections_analysis_dict, 'philpapers')}")
+print(f"\nPhilpapers - service count: {get_count_library(philpapers, service_dict)}")
+print(f"Philpapers - technology/field count: {get_count_library(philpapers, technology_field_dict)}")
+print(f"Philpapers - sector count: {get_count_library(philpapers, sector_dict)}")
+print(f"Philpapers - reflections/analysis count: {get_count_library(philpapers, reflections_analysis_dict)}")
 
 
 # Springer
 
-print(f"\nSpringer - service count: {get_count_library(springer, service_dict, 'springer')}")
-print(f"Springer - technology/field count: {get_count_library(springer, technology_field_dict, 'springer')}")
-print(f"Springer - sector count: {get_count_library(springer, sector_dict, 'springer')}")
-print(f"Springer - reflections/analysis count: {get_count_library(springer, reflections_analysis_dict, 'springer')}")
+print(f"\nSpringer - service count: {get_count_library(springer, service_dict)}")
+print(f"Springer - technology/field count: {get_count_library(springer, technology_field_dict)}")
+print(f"Springer - sector count: {get_count_library(springer, sector_dict)}")
+print(f"Springer - reflections/analysis count: {get_count_library(springer, reflections_analysis_dict)}")
+
+# cleaning the manual work review.csv
+
+review = pd.read_csv("manual_work/review.csv")
+
+for col in review.columns:
+    if col.startswith("Unnamed"):
+        review = review.drop(col, axis=1)
+        review = review.drop_duplicates(subset="DOI")
+
+review.to_csv("manual_work/review.csv")
